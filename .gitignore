@@ -1,0 +1,76 @@
+# Node & package managers
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-error.log*
+
+# Lockfiles (prefer single root pnpm lock)
+**/pnpm-lock.yaml
+!/pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Workspace file (prefer single root workspace)
+**/pnpm-workspace.yaml
+!/pnpm-workspace.yaml
+
+# Build outputs
+/dist/
+/build/
+/lib/
+/out/
+/.output/
+
+# Framework caches & outputs
+/.next/
+/.nuxt/
+/.svelte-kit/
+/.expo/
+/.vercel/
+.storybook-out/
+storybook-static/
+
+# Tool caches
+/.cache/
+/.turbo/
+/.vite/
+/.parcel-cache/
+/.esbuild/
+/.swc/
+.eslintcache
+.stylelintcache
+
+# Test artifacts
+/coverage/
+cypress/screenshots/
+cypress/videos/
+/playwright-report/
+/test-results/
+
+# Env files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Database & Drizzle
+/.drizzle/
+drizzle/
+*.sqlite
+*.db
+*.db-journal
+
+# Logs
+logs/
+logs/**/*.log
+*.log
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

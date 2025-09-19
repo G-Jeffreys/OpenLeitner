@@ -1,0 +1,74 @@
+version: "3.9"
+
+name: leitner-dev
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: leitner_postgres
+    restart: no
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: leitner
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d leitner"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7
+    container_name: leitner_redis
+    restart: no
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: leitner_mailpit
+    restart: no
+    ports:
+      - "8025:8025"   # Web UI
+      - "1025:1025"   # SMTP
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8025/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  # Optional: lightweight Postgres web GUI. Remove if you don't want it.
+  pgweb:
+    image: sosedoff/pgweb:latest
+    container_name: leitner_pgweb
+    restart: no
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/leitner?sslmode=disable
+    ports:
+      - "8081:8081"
+    command: ["--bind=0.0.0.0", "--listen=8081"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  pg_data:
+  redis_data:
